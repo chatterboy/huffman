@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <map>
 using namespace std;
 
 struct _node
@@ -42,6 +43,7 @@ string text;
 vector<_node*> vt;
 priority_queue<_node*, vector<_node*>, cmp> pq;
 _node *root;
+map<char, string> tb;
 
 void vlr(_node *pnode, int depth)
 {
@@ -52,6 +54,23 @@ void vlr(_node *pnode, int depth)
 		vlr(pnode->lchild, depth+1);
 		vlr(pnode->rchild, depth+1);
 	}	
+}
+
+void mktb(_node *pnode, string& str)
+{
+	if (pnode->str.size() == 1)
+	{
+		tb[pnode->str[0]] = str;
+		return;
+	}
+
+	str.push_back('0');
+	mktb(pnode->lchild, str);
+	str.pop_back();
+
+	str.push_back('1');
+	mktb(pnode->rchild, str);
+	str.pop_back();
 }
 
 int main()
@@ -91,4 +110,19 @@ int main()
 	root = pq.top(); pq.pop();
 
 	vlr(root, 0);
+
+	putchar('\n');
+
+	string str;
+	mktb(root, str);
+
+	for (auto e : tb)
+		printf("%c %s\n", e.first, e.second.c_str());
+	putchar('\n');
+
+	string res = "";
+	for (int i=0; i<text.size(); ++i)
+		res += tb[text[i]];
+
+	puts(res.c_str());
 }
