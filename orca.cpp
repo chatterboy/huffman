@@ -9,20 +9,50 @@ struct _node
 {
 	int no;
 	string str;
-	_node *child;
+	_node *lchild;
+	_node *rchild;
 	_node *parent;
 	_node(char ch)
 	{
 		no = 1;
 		str.push_back(ch);
-		child = parent = nullptr;
+		lchild = rchild = parent = nullptr;
+	}
+	_node(_node *a, _node *b)
+	{
+		no += a->no + b->no;
+		str = a->str + b->str;
+		parent = nullptr;
+		lchild = a; rchild = b;
+		a->parent = b->parent = this;
 	}
 	void inc() { no++; }
 };
 
+
+struct cmp
+{
+	bool operator () (_node *a, _node *b)
+	{
+		return a->no > b->no;
+	}
+};
+
 string text;
 vector<_node*> vt;
-priority_queue<_node*, cmp> pq;
+priority_queue<_node*, vector<_node*>, cmp> pq;
+_node *root;
+
+void vlr(_node *pnode, int depth)
+{
+	if (pnode != nullptr)
+	{
+		for (int i=0; i<5*depth; ++i) putchar(' ');
+		printf("%s %d\n", pnode->str.c_str(), pnode->no);
+		vlr(pnode->lchild, depth+1);
+		vlr(pnode->rchild, depth+1);
+	}	
+}
 
 int main()
 {
@@ -48,13 +78,17 @@ int main()
 	for (auto e : vt)
 		pq.push(e);
 
-	cout << pq.size() << '\n';
-
-	while (!pq.empty()) // need to implement the comparison function
+	while (pq.size() > 1)
 	{
-		_node *temp = pq.top();
-		pq.pop();
+		_node *a = pq.top(); pq.pop();
+		_node *b = pq.top(); pq.pop();
 
-		printf("%s %d\n", temp->str.c_str(), temp->no);
+		_node *temp = new _node(a, b);
+
+		pq.push(temp);
 	}
+
+	root = pq.top(); pq.pop();
+
+	vlr(root, 0);
 }
