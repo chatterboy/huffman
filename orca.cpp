@@ -57,7 +57,7 @@ void vlr(_node *pnode, int depth)
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin >> text;
+	getline(cin, text);
 
 	for (auto ch : text)
 	{
