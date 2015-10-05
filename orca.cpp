@@ -112,7 +112,7 @@ int main()
 		}
 	}
 
-	// next, insert priority queue
+	// next, insert them all in priority queue
 	for (auto e : vt)
 		pq.push(e);
 
