@@ -34,15 +34,10 @@ struct _node
 		a->parent = b->parent = this;
 	}
 	void inc() { no++; }
-	// for priority_queue in STL
-	// this can order nodes using the number of characters
-	bool operator < (const _node& node) const
-	{
-		return this->no > node.no;
-	}
 };
 
-
+// for priority_queue in STL
+// this can order nodes using the number of characters
 struct cmp
 {
 	bool operator () (_node *a, _node *b)
@@ -53,8 +48,7 @@ struct cmp
 
 string text;
 vector<_node*> vt;
-// priority_queue<_node*, vector<_node*>, cmp> pq;
-priority_queue<_node*> pq;
+priority_queue<_node*, vector<_node*>, cmp> pq;
 _node *root;
 map<char, string> tb;
 
