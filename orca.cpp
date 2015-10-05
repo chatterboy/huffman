@@ -1,3 +1,6 @@
+// Author : Chansik
+// Lang : C++11
+
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -6,6 +9,7 @@
 #include <map>
 using namespace std;
 
+// node to construct a huffman tree
 struct _node
 {
 	int no;
@@ -13,12 +17,14 @@ struct _node
 	_node *lchild;
 	_node *rchild;
 	_node *parent;
+	// just we make a node including 1 character
 	_node(char ch)
 	{
 		no = 1;
 		str.push_back(ch);
 		lchild = rchild = parent = nullptr;
 	}
+	// this constructor can use when we merge two nodes
 	_node(_node *a, _node *b)
 	{
 		no += a->no + b->no;
@@ -28,6 +34,8 @@ struct _node
 		a->parent = b->parent = this;
 	}
 	void inc() { no++; }
+	// for priority_queue in STL
+	// this can order nodes using the number of characters
 	bool operator < (const _node& node) const
 	{
 		return this->no > node.no;
@@ -50,6 +58,9 @@ priority_queue<_node*> pq;
 _node *root;
 map<char, string> tb;
 
+// pre-order tree traversal to display huffman tree
+// 각 노드에서는 서브트리로부터 나타난 문자들과 각 문자들이 나타난
+// 수의 합을 보여준다.
 void vlr(_node *pnode, int depth)
 {
 	if (pnode != nullptr)
@@ -61,6 +72,7 @@ void vlr(_node *pnode, int depth)
 	}	
 }
 
+// make a huffman table using huffman tree recursively
 void mktb(_node *pnode, string& str)
 {
 	if (pnode->str.size() == 1)
@@ -83,6 +95,7 @@ int main()
 	ios::sync_with_stdio(false);
 	getline(cin, text);
 
+	// first, we need to make all nodes including character and its frequency
 	for (auto ch : text)
 	{
 		int i;
@@ -99,9 +112,11 @@ int main()
 		}
 	}
 
+	// next, insert priority queue
 	for (auto e : vt)
 		pq.push(e);
 
+	// second, we merge two nodes until it have just a node
 	while (pq.size() > 1)
 	{
 		_node *a = pq.top(); pq.pop();
@@ -112,6 +127,7 @@ int main()
 		pq.push(temp);
 	}
 
+	// need to know the root...
 	root = pq.top(); pq.pop();
 
 	puts("Huffman tree");
