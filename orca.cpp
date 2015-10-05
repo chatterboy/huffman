@@ -27,7 +27,7 @@ struct _node
 	// this constructor can use when we merge two nodes
 	_node(_node *a, _node *b)
 	{
-		no += a->no + b->no;
+		no = a->no + b->no;
 		str = a->str + b->str;
 		parent = nullptr;
 		lchild = a; rchild = b;
