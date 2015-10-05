@@ -28,6 +28,10 @@ struct _node
 		a->parent = b->parent = this;
 	}
 	void inc() { no++; }
+	bool operator < (const _node& node) const
+	{
+		return this->no > node.no;
+	}
 };
 
 
@@ -41,7 +45,8 @@ struct cmp
 
 string text;
 vector<_node*> vt;
-priority_queue<_node*, vector<_node*>, cmp> pq;
+// priority_queue<_node*, vector<_node*>, cmp> pq;
+priority_queue<_node*> pq;
 _node *root;
 map<char, string> tb;
 
@@ -87,7 +92,7 @@ int main()
 				vt[i]->inc();
 				break;
 			}
-		if (i == vt.size()) // no ch in vector
+		if (i == vt.size())
 		{
 			_node *temp = new _node(ch);
 			vt.push_back(temp);
@@ -109,20 +114,24 @@ int main()
 
 	root = pq.top(); pq.pop();
 
+	puts("Huffman tree");
 	vlr(root, 0);
-
 	putchar('\n');
 
 	string str;
 	mktb(root, str);
 
+	puts("Huffman table");
 	for (auto e : tb)
-		printf("%c %s\n", e.first, e.second.c_str());
+		printf(" %c   %s\n", e.first, e.second.c_str());
 	putchar('\n');
 
 	string res = "";
 	for (int i=0; i<text.size(); ++i)
 		res += tb[text[i]];
 
-	puts(res.c_str());
+	printf("Result: %s\n\n", res.c_str());
+
+	printf("The number of bits of text: %d\n", text.size()*8);
+	printf("The number of bits of using huffan code: %d\n", res.size());
 }
