@@ -23,7 +23,7 @@ const char *password = "1234";
 const char *database = "ibm";
 int port = 3306;
 
-vector<vector<string> > problem_records; 
+vector<vector<string> > problem_records;
 
 void add_backslash(string& des, string &src) {
 	des.clear();
@@ -96,6 +96,16 @@ void replca_all_problems_mysql() {
 		mysql_real_query(conn, sql, strlen(sql));
 	}
 	fclose(fout);
+}
+
+void remove_problems_having_img() {
+	vector<vector<string> > _problem_records;
+	for (int i = 0; i < problem_records.size(); i++) {
+		string::size_type n = problem_records[i][1].find("img");
+		if (n != string::npos)
+			_problem_records.push_back(problem_records[i]);
+	}
+	problem_records = _problem_records;
 }
 
 int main() {
