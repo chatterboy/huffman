@@ -102,7 +102,7 @@ void remove_problems_having_img() {
 	vector<vector<string> > _problem_records;
 	for (int i = 0; i < problem_records.size(); i++) {
 		string::size_type n = problem_records[i][1].find("img");
-		if (n != string::npos)
+		if (n == string::npos)
 			_problem_records.push_back(problem_records[i]);
 	}
 	problem_records = _problem_records;
