@@ -12,7 +12,6 @@ using namespace std;
 
 #define BUFFER_SIZE 512
 #define _BUFFER_SIZE 65536
-// #define buffer_size_large 65536
 
 FILE *fout;
 
@@ -88,14 +87,23 @@ void insert_backslash_problems() {
 
 void replca_all_problems_mysql() {
 	char sql[_BUFFER_SIZE];
-	fout = fopen("output.txt", "w");
+//	fout = fopen("output.txt", "w");
 	for (int i = 0; i < problem_records.size(); i++) {
 		memset(sql, 0, sizeof(sql));
-		sprintf(sql, "replace into problems values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')", problem_records[i][0].c_str(), problem_records[i][1].c_str(), problem_records[i][2].c_str(), problem_records[i][3].c_str(), problem_records[i][4].c_str(), problem_records[i][5].c_str());
-		fprintf(fout, "%s\n\n\n\n", sql);
+		sprintf(sql, "replace into problems values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')",
+			problem_records[i][0].c_str(), problem_records[i][1].c_str(), problem_records[i][2].c_str(),
+			problem_records[i][3].c_str(), problem_records[i][4].c_str(), problem_records[i][5].c_str());
+//		fprintf(fout, "%s\n\n\n\n", sql);
 		mysql_real_query(conn, sql, strlen(sql));
 	}
-	fclose(fout);
+//	fclose(fout);
+}
+
+void remove_all_problems() {
+	char sql[BUFFER_SIZE];
+	memset(sql, 0, sizeof(sql));
+	sprintf(sql, "delete from problems");
+	mysql_real_query(conn, sql, strlen(sql));
 }
 
 void remove_problems_having_img() {
@@ -108,6 +116,22 @@ void remove_problems_having_img() {
 	problem_records = _problem_records;
 }
 
+void remove_problems_having_img_mysql() {
+	char sql[_BUFFER_SIZE];
+	remove_all_problems();
+	remove_problems_having_img();
+	fout = fopen("output.txt", "w");
+	for (int i = 0; i < problem_records.size(); i++) {
+		memset(sql, 0, sizeof(sql));
+		sprintf(sql, "insert into problems values (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')",
+			problem_records[i][0].c_str(), problem_records[i][1].c_str(), problem_records[i][2].c_str(),
+			problem_records[i][3].c_str(), problem_records[i][4].c_str(), problem_records[i][5].c_str());
+		fprintf(fout, "%s\n\n\n", sql);
+		mysql_real_query(conn, sql, strlen(sql));
+	}
+	fclose(fout);
+}
+
 int main() {
 	init_mysql_conf();
 
@@ -116,9 +140,13 @@ int main() {
 		exit(0);
 	}
 
+	// 이미지 소스  잇는거 다 지우기
 	get_all_problems_mysql();
 
-//	print_problems();
+	remove_problems_having_img_mysql();
+
+	// 역슬래쉬 추가하기
+	get_all_problems_mysql();
 
 	insert_backslash_problems();
 
