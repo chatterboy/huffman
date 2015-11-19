@@ -2,12 +2,14 @@
 #include <cstring>
 #include <cctype>
 #include <string>
+#include <map>
 using namespace std;
 #define BUFFER_SIZE 128
 #define WHITE_SPACE 0x20
 
 FILE *fin;
 char buf[BUFFER_SIZE];
+map<string,int> wtb;
 
 void init_read_file() {
 	fin = fopen("input.in", "r");
@@ -24,15 +26,12 @@ int read_line_file() {
 	return 1;
 }
 
-void _make_words_line() {
-	char* token;
-	char _buf[BUFFER_SIZE] = {0};
-	strcpy(_buf, buf);
-	token = strtok(_buf, " .,;:\n!?\"(_");
-	while (token != NULL) {
-		puts(token);
-		token = strtok(NULL, " .,;:\n!?\"(_");
-	}
+void change_to_lower(string& w) {
+	int n;
+	n = w.size();
+	for (int i = 0; i < n; i++)
+		if (isalpha(w[i]) && isupper(w[i]))
+			w[i] = tolower(w[i]);
 }
 
 void make_words_line() {
@@ -51,9 +50,10 @@ void make_words_line() {
 					w.push_back(buf[i]);
 				}
 			if (!flag) {
-				if (!w.empty())
-//					printf("%s %d\n", w.c_str(), w.size());
-					puts(w.c_str());
+				if (!w.empty()) {
+					change_to_lower(w);
+					wtb[w]++;
+				}
 				w.clear();
 			}
 		}
@@ -62,8 +62,9 @@ void make_words_line() {
 
 int main() {
 	init_read_file();
-	while (!read_line_file()) {
+	while (!read_line_file())
 		make_words_line();
-	}
 	free_read_file();
+	for (auto it = wtb.begin(); it != wtb.end(); it++)
+		printf("%s %d\n", it->first.c_str(), it->second);
 }
